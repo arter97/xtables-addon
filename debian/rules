@@ -29,13 +29,8 @@ override_dh_clean:
 override_dh_auto_configure:
 	dh_auto_configure -- --without-kbuild --libexecdir=\$${prefix}/libexec
 
-override_dh_auto_build: build_source
-	dh_auto_build -- V=1
-
-override_dh_auto_install: install_dkms
-	dh_auto_install
-
-build_source:
+override_dh_auto_build:
+	## prepare sources for DKMS and source packages
 	mkdir -p \
 		$(SOURCE_BUILD_DIR) \
 		$(SOURCE_BUILD_DIR)/debian \
@@ -58,6 +53,11 @@ build_source:
 		extensions/pknock/Kbuild \
 		extensions/pknock/xt_*.[ch] \
 		$(SOURCE_BUILD_DIR)/extensions/pknock
+	## continue with build
+	dh_auto_build
+
+override_dh_auto_install: $(DKMS_CONF)
+	## prepare module sources
 	cp \
 		debian/changelog \
 		debian/control \
@@ -67,14 +67,6 @@ build_source:
 	cp \
 		debian/rules.modules \
 		$(SOURCE_BUILD_DIR)/debian/rules
-
-install_dkms: install_source $(DKMS_CONF)
-	mkdir -p $(DKMS_SRC_DIR)
-	$(RM) -r $(SOURCE_MODULES_DIR)/xtables-addons/debian
-	mv $(SOURCE_MODULES_DIR)/xtables-addons $(DKMS_SRC_DIR)/xtables-addons-$(DEB_VERSION_UPSTREAM)
-	rmdir $(SOURCE_MODULES_DIR)
-
-install_source:
 	mkdir -p $(SOURCE_MODULES_DIR)
 	mv $(SOURCE_BUILD_DIR) $(SOURCE_MODULES_DIR)/xtables-addons
 	tar cjf $(SOURCE_SRC_DIR)/xtables-addons.tar.bz2 \
@@ -84,9 +76,14 @@ install_source:
 		--group=root:0 \
 		--sort=name \
 		-C $(SOURCE_SRC_DIR) modules
+	$(RM) -r $(SOURCE_MODULES_DIR)/xtables-addons/debian
+	## prepare DKMS sources
+	mkdir -p $(DKMS_SRC_DIR)
+	mv $(SOURCE_MODULES_DIR)/xtables-addons $(DKMS_SRC_DIR)/xtables-addons-$(DEB_VERSION_UPSTREAM)
+	$(RM) -r $(SOURCE_MODULES_DIR)
+	## continue with install
+	dh_auto_install
 
 $(DKMS_CONF):
 	sed -e 's/__VERSION__/$(DEB_VERSION_UPSTREAM)/g' $(DKMS_CONF).in >$(DKMS_CONF)
 	cat $(DKMS_CONF).modules >>$(DKMS_CONF)
-
-.PHONY: build_source install_dkms install_source
