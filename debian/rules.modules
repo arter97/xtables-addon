@@ -1,0 +1,39 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+MAKEARGS = -C $(KSRC) M=$(CURDIR)/extensions XA_ABSTOPSRCDIR=$(CURDIR) XA_TOPSRCDIR=$(CURDIR)
+
+#
+# See /usr/share/doc/module-assistant/HOWTO-DEVEL.gz
+# and /usr/share/doc/module-assistant/examples.
+#
+
+PACKAGE = xtables-addons-modules
+
+-include /usr/share/modass/include/generic.make
+-include /usr/share/modass/include/common-rules.make
+
+kdist_clean:
+	dh clean
+
+kdist_config: prep-deb-files
+
+binary-modules:
+	dh binary-arch
+
+override_dh_auto_build:
+	$(MAKE) $(MAKEARGS)
+
+override_dh_auto_install:
+	$(MAKE) $(MAKEARGS) modules_install \
+		INSTALL_MOD_PATH=$(CURDIR)/debian/$(PKGNAME) \
+		INSTALL_MOD_DIR=extra/xtables-addons
+
+override_dh_auto_clean:
+	$(MAKE) $(MAKEARGS) clean
+
+override_dh_builddeb:
+	dh_builddeb --destdir=$(DEB_DESTDIR)

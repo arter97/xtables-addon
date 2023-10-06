@@ -1,0 +1,30 @@
+Source: xtables-addons
+Section: net
+Priority: optional
+Maintainer: Debian Netfilter Packaging Team <pkg-netfilter-team@lists.alioth.debian.org>
+Uploaders: Jeremy Sowden <jeremy@azazel.net>
+Build-Depends: debhelper-compat (= 13), dkms, libxtables-dev, pkg-config
+Standards-Version: 4.6.1
+Rules-Requires-Root: no
+Homepage: https://inai.de/projects/xtables-addons/
+Vcs-Browser: https://salsa.debian.org/pkg-netfilter-team/pkg-xtables-addons
+Vcs-Git: https://salsa.debian.org/pkg-netfilter-team/pkg-xtables-addons.git
+
+Package: xtables-addons-modules-_KVERS_
+Section: kernel
+Architecture: any
+Multi-Arch: same
+Provides: xtables-addons-modules
+Depends: xtables-addons-common (>= ${source:Upstream-Version}), ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Description: Additional targets and matches for iptables [kernel modules for _KVERS_]
+ Xtables-addons provides extra modules for iptables not present in the kernel,
+ and is the successor of patch-o-matic.  It contains matches and targets such
+ as TARPIT, CHAOS, TEE, geoip, IPMARK, DELUDE and condition.
+ .
+ This package contains the compiled kernel modules for _KVERS_
+ .
+ If you have compiled your own kernel, you will most likely need to build
+ your own xtables-addons-modules. The xtables-addons-source package has been
+ provided for use with the Debian's module-assistant package to produce a
+ version of xtables-addons-modules for your kernel.

@@ -1,0 +1,4 @@
+#
+# Upstream signs the uncompressed tar-ball.
+#
+xtables-addons source: orig-tarball-missing-upstream-signature xtables-addons_*.orig.tar.xz

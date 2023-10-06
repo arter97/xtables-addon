@@ -1,0 +1,4 @@
+#
+# Ignore CPP dependency files (cf. `AM_DEPFLAGS` in Makefile.iptrules.in)
+#
+extend-diff-ignore = "^extensions(?:/[^/]+)?/\.libxt_\w+\.oo\.d$"

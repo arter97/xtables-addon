@@ -1,0 +1,91 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+include /usr/share/dpkg/pkg-info.mk
+
+BUILD_DATE := $(shell date --iso-8601=seconds --date '@$(SOURCE_DATE_EPOCH)' --utc)
+
+DKMS_CONF    = debian/xtables-addons-dkms.dkms
+DKMS_SRC_DIR = debian/xtables-addons-dkms/usr/src
+
+SOURCE_BUILD_DIR   = debian/xtables-addons-source.build
+SOURCE_SRC_DIR     = debian/xtables-addons-source/usr/src
+SOURCE_MODULES_DIR = $(SOURCE_SRC_DIR)/modules
+
+%:
+	dh $@
+
+override_dh_auto_clean:
+	dh_auto_clean --no-parallel
+
+override_dh_clean:
+	dh_clean $(SOURCE_BUILD_DIR)/ $(DKMS_CONF)
+
+override_dh_auto_configure:
+	dh_auto_configure -- --without-kbuild
+
+override_dh_auto_build: build_source
+	dh_auto_build -- V=1
+
+build_source:
+	mkdir -p \
+		$(SOURCE_BUILD_DIR) \
+		$(SOURCE_BUILD_DIR)/debian \
+		$(SOURCE_BUILD_DIR)/extensions \
+		$(SOURCE_BUILD_DIR)/extensions/ACCOUNT \
+		$(SOURCE_BUILD_DIR)/extensions/pknock
+	cp \
+		mconfig \
+		$(SOURCE_BUILD_DIR)
+	cp \
+		extensions/Kbuild \
+		extensions/compat_*.[ch] \
+		extensions/xt_*.[ch] \
+		$(SOURCE_BUILD_DIR)/extensions
+	cp \
+		extensions/ACCOUNT/Kbuild \
+		extensions/ACCOUNT/xt_*.[ch] \
+		$(SOURCE_BUILD_DIR)/extensions/ACCOUNT
+	cp \
+		extensions/pknock/Kbuild \
+		extensions/pknock/xt_*.[ch] \
+		$(SOURCE_BUILD_DIR)/extensions/pknock
+	cp \
+		debian/changelog \
+		debian/control \
+		debian/control.modules.in \
+		debian/copyright \
+		$(SOURCE_BUILD_DIR)/debian
+	cp \
+		debian/rules.modules \
+		$(SOURCE_BUILD_DIR)/debian/rules
+
+execute_before_dh_auto_install: install_dkms
+
+install_dkms: install_source $(DKMS_CONF)
+	mkdir -p $(DKMS_SRC_DIR)
+	$(RM) -r $(SOURCE_MODULES_DIR)/xtables-addons/debian
+	mv $(SOURCE_MODULES_DIR)/xtables-addons $(DKMS_SRC_DIR)/xtables-addons-$(DEB_VERSION_UPSTREAM)
+	rmdir $(SOURCE_MODULES_DIR)
+
+install_source:
+	mkdir -p $(SOURCE_MODULES_DIR)
+	mv $(SOURCE_BUILD_DIR) $(SOURCE_MODULES_DIR)/xtables-addons
+	tar cjf $(SOURCE_SRC_DIR)/xtables-addons.tar.bz2 \
+		--mtime="$(BUILD_DATE)" \
+		--mode=go=rX,u+rw,a-s \
+		--owner=root:0 \
+		--group=root:0 \
+		--sort=name \
+		-C $(SOURCE_SRC_DIR) modules
+
+$(DKMS_CONF):
+	sed -e 's/__VERSION__/$(DEB_VERSION_UPSTREAM)/g' $(DKMS_CONF).in >$(DKMS_CONF)
+	cat $(DKMS_CONF).modules >>$(DKMS_CONF)
+
+.PHONY: build_source install_dkms install_source

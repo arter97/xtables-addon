@@ -1,0 +1,19 @@
+xtables-addons (3.18-1) unstable; urgency=medium
+
+  The xt_geoip_fetch script has been renamed to xt_geoip_query.
+
+ -- Jeremy Sowden <jeremy@azazel.net>  Fri, 12 Mar 2021 13:51:59 +0000
+
+xtables-addons (3.11-1) unstable; urgency=medium
+
+  The scripts for downloading and converting the GeoIP database for use by
+  xt_geoip have moved from /usr/lib/xtables-addons to
+  /usr/libexec/xtables-addons.
+
+ -- Jeremy Sowden <jeremy@azazel.net>  Thu, 22 Oct 2020 18:47:39 +0100
+
+xtables-addons (2.4-1) unstable; urgency=low
+
+  RAWNAT and STEAL modules are no longer provided.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Sun, 12 Jan 2014 12:00:26 +1100

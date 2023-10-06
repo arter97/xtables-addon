@@ -1,0 +1,67 @@
+Source: xtables-addons
+Section: net
+Priority: optional
+Maintainer: Debian Netfilter Packaging Team <team+pkg-netfilter-team@tracker.debian.org>
+Uploaders: Jeremy Sowden <jeremy@azazel.net>
+Build-Depends: debhelper-compat (= 13), dh-sequence-dkms, libxtables-dev, pkg-config
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+Homepage: https://inai.de/projects/xtables-addons/
+Vcs-Browser: https://salsa.debian.org/pkg-netfilter-team/pkg-xtables-addons
+Vcs-Git: https://salsa.debian.org/pkg-netfilter-team/pkg-xtables-addons.git
+Testsuite: autopkgtest-pkg-dkms
+
+Package: xtables-addons-common
+Architecture: any
+Provides: xtables-addons-common-${source:Upstream-Version}
+Depends: ${misc:Depends}, ${perl:Depends}, ${shlibs:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+# "libnet-cidr-lite-perl" is used by `xt_geoip_build`;
+# "unzip" and "wget" are used by `xt_geoip_dl`.
+Recommends: libnet-cidr-lite-perl, unzip, wget, xtables-addons-dkms
+Suggests: libtext-csv-xs-perl
+Description: Additional targets and matches for iptables [tools, libs]
+ Xtables-addons provides extra modules for iptables not present in the kernel,
+ and is the successor of patch-o-matic.  It contains matches and targets such
+ as TARPIT, CHAOS, TEE, geoip, IPMARK, DELUDE and condition.
+ .
+ This package provides the userspace libraries for iptables to use the
+ extensions provided by the xtables-addons-dkms or xtables-addons-source
+ packages.
+
+Package: xtables-addons-dkms
+Section: kernel
+Architecture: all
+Multi-Arch: foreign
+Depends: dkms,
+         xtables-addons-common (>= ${source:Upstream-Version}),
+         ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Recommends: linux-headers
+Description: Additional targets and matches for iptables [sources for DKMS]
+ Xtables-addons provides extra modules for iptables not present in the kernel,
+ and is the successor of patch-o-matic.  It contains matches and targets such
+ as TARPIT, CHAOS, TEE, geoip, IPMARK, DELUDE and condition.
+ .
+ The dkms package will automatically compile and install the kernel modules for
+ your current kernel version.
+
+Package: xtables-addons-source
+Architecture: all
+Multi-Arch: foreign
+Depends: bzip2, debhelper-compat (= 13), ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Recommends: module-assistant
+Description: Additional targets and matches for iptables [sources for module-assistant]
+ Xtables-addons provides extra modules for iptables not present in the kernel,
+ and is the successor of patch-o-matic.  It contains matches and targets such
+ as TARPIT, CHAOS, TEE, geoip, IPMARK, DELUDE and condition.
+ .
+ This package provides the source code for the xtables-addons kernel modules.
+ Kernel source or headers are required to compile these modules.
+ .
+ The module-assistant package can be used to a compile them and create a package
+ for your current kernel version.
+ .
+ The xtables-addons-common package is also required in order to make use of
+ these modules.
