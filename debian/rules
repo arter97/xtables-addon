@@ -18,7 +18,7 @@ SOURCE_SRC_DIR     = debian/xtables-addons-source/usr/src
 SOURCE_MODULES_DIR = $(SOURCE_SRC_DIR)/modules
 
 %:
-	dh $@
+	dh $@ --with dkms
 
 override_dh_auto_clean:
 	dh_auto_clean --no-parallel
