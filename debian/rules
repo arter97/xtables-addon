@@ -27,7 +27,7 @@ override_dh_clean:
 	dh_clean $(SOURCE_BUILD_DIR)/ $(DKMS_CONF)
 
 override_dh_auto_configure:
-	dh_auto_configure -- --without-kbuild
+	dh_auto_configure -- --without-kbuild --libexecdir=\$${prefix}/libexec
 
 override_dh_auto_build: build_source
 	dh_auto_build -- V=1
