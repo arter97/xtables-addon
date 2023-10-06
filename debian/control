@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Debian Netfilter Packaging Team <team+pkg-netfilter-team@tracker.debian.org>
 Uploaders: Jeremy Sowden <jeremy@azazel.net>
-Build-Depends: debhelper, dkms, libxtables-dev, pkg-config
+Build-Depends: debhelper, dkms (<< 2.8.7) | dh-sequence-dkms, libxtables-dev, pkg-config
 Standards-Version: 4.6.2
 Rules-Requires-Root: no
 Homepage: https://inai.de/projects/xtables-addons/
