@@ -32,6 +32,9 @@ override_dh_auto_configure:
 override_dh_auto_build: build_source
 	dh_auto_build -- V=1
 
+override_dh_auto_install: install_dkms
+	dh_auto_install
+
 build_source:
 	mkdir -p \
 		$(SOURCE_BUILD_DIR) \
@@ -64,8 +67,6 @@ build_source:
 	cp \
 		debian/rules.modules \
 		$(SOURCE_BUILD_DIR)/debian/rules
-
-execute_before_dh_auto_install: install_dkms
 
 install_dkms: install_source $(DKMS_CONF)
 	mkdir -p $(DKMS_SRC_DIR)
